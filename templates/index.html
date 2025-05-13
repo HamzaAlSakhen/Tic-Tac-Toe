@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Tic Tac Toe</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+   <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+
+<body>
+   <div class="container">
+      <h1>Tic Tac Toe</h1>
+
+      {% if current_user.is_authenticated %}
+      <div class="user-info">
+         <p>Hoş geldin, <strong>{{ username }}</strong>!</p>
+         <p id="player-score">Kazanma: 0 | Kaybetme: 0 | Berabere: 0</p>
+         <a href="{{ url_for('logout') }}" class="btn btn-secondary">Çıkış Yap</a>
+      </div>
+
+      <div class="game-container">
+         <div class="left-panel">
+            <div class="panel-section">
+               <h3>Aktif Oyuncular</h3>
+               <div class="players-container">
+                  <ul id="players-list">
+                     <li>Oyuncular yükleniyor...</li>
+                  </ul>
+               </div>
+            </div>
+
+            <div class="panel-section">
+               <div id="game-controls">
+                  <button id="find-game" class="btn btn-primary">Rastgele Oyun Ara</button>
+               </div>
+            </div>
+         </div>
+
+         <div class="right-panel">
+            <div id="game-status" class="hidden panel-section">
+               <h3>Oyun Durumu</h3>
+               <p>Durum: <span id="status-text">Bekleniyor...</span></p>
+               <p>Sembolünüz: <span id="player-symbol" class="symbol">-</span></p>
+               <p>Sıra: <span id="turn-info" class="symbol">-</span></p>
+            </div>
+
+            <div id="game-board" class="hidden panel-section">
+               <div class="board">
+                  <div class="cell" data-idx="0"></div>
+                  <div class="cell" data-idx="1"></div>
+                  <div class="cell" data-idx="2"></div>
+                  <div class="cell" data-idx="3"></div>
+                  <div class="cell" data-idx="4"></div>
+                  <div class="cell" data-idx="5"></div>
+                  <div class="cell" data-idx="6"></div>
+                  <div class="cell" data-idx="7"></div>
+                  <div class="cell" data-idx="8"></div>
+               </div>
+            </div>
+
+            <div id="game-result" class="hidden panel-section">
+               <h3>Oyun Sonucu</h3>
+               <h2 id="result-message"></h2>
+               <div class="result-actions">
+                  <button id="play-again" class="btn btn-primary">Tekrar Oyna</button>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <div class="notifications" id="notifications">
+         <!-- Bildirimler buraya gelecek -->
+      </div>
+      {% else %}
+      <div id="login-form">
+         <h2>Giriş Yap</h2>
+         {% if error %}
+         <div class="error">{{ error }}</div>
+         {% endif %}
+         <form method="post" action="{{ url_for('login') }}">
+            <div class="form-group">
+               <label for="username">Kullanıcı Adı:</label>
+               <input type="text" id="username" name="username" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Giriş Yap</button>
+         </form>
+      </div>
+      {% endif %}
+   </div>
+
+   {% if current_user.is_authenticated %}
+   <script src="{{ url_for('static', filename='game.js') }}"></script>
+   {% endif %}
+</body>
+
+</html>
