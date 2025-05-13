@@ -19,11 +19,16 @@ document.addEventListener('DOMContentLoaded', () => {
    // Oyun durumu
    let currentRoom = null;
    let mySymbol = null;
-   let scores = { wins: 0, losses: 0, draws: 0 };
    let gameActive = false;
+
+   // Skor bilgisini localStorage'dan yükle veya yeni oluştur
+   let scores = loadScores();
 
    // Socket.IO bağlantısı
    const socket = io();
+
+   // Sayfa yüklendiğinde skorları güncelle
+   updateScores();
 
    // Bağlantı olayları
    socket.on('connect', () => {
@@ -55,6 +60,9 @@ document.addEventListener('DOMContentLoaded', () => {
       // Oyun başladığında sadece oyun tahtasını göster
       hidePlayersList();
       gameActive = true;
+
+      // Yeni oyun başladığında tüm hücreleri temizle
+      resetBoard();
    });
 
    socket.on('state', (data) => {
@@ -95,8 +103,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
          }
 
-         // Skor güncelleme
+         // Skor güncelleme ve kaydetme
          updateScores();
+         saveScores();
 
          // Oyun bittiğinde oyuncu listesini tekrar göster
          showPlayersList();
@@ -227,6 +236,14 @@ document.addEventListener('DOMContentLoaded', () => {
       });
    }
 
+   // Tahtayı tamamen sıfırla (kazanan çizgisi dahil)
+   function resetBoard() {
+      cells.forEach(cell => {
+         cell.textContent = '';
+         cell.classList.remove('x', 'o', 'winner');
+      });
+   }
+
    // Sıra güncelleme
    function updateTurn(turn) {
       turnInfo.textContent = turn;
@@ -236,6 +253,20 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
          statusText.textContent = 'Rakibin hamlesi bekleniyor...';
       }
+   }
+
+   // Skorları localStorage'dan yükle
+   function loadScores() {
+      const savedScores = localStorage.getItem('tictactoe_scores');
+      if (savedScores) {
+         return JSON.parse(savedScores);
+      }
+      return { wins: 0, losses: 0, draws: 0 };
+   }
+
+   // Skorları localStorage'a kaydet
+   function saveScores() {
+      localStorage.setItem('tictactoe_scores', JSON.stringify(scores));
    }
 
    // Skor güncelleme
@@ -348,10 +379,7 @@ document.addEventListener('DOMContentLoaded', () => {
       mySymbol = null;
 
       // UI sıfırlama
-      cells.forEach(cell => {
-         cell.textContent = '';
-         cell.classList.remove('x', 'o', 'winner');
-      });
+      resetBoard();
 
       playerSymbol.textContent = '-';
       turnInfo.textContent = '-';
@@ -369,4 +397,4 @@ document.addEventListener('DOMContentLoaded', () => {
          socket.emit('get_available_players');
       }
    }, 5000);
-}); 
+});
