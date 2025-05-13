@@ -24,7 +24,7 @@ Bu proje, aynı yerel ağdaki iki bilgisayarın tarayıcı üzerinden gerçek za
 
 1. Projeyi klonlayın veya indirin:
 ```bash
-git clone https://github.com/kullaniciadi/tictactoe.git
+git clone https://github.com/HamzaAlSakhen/Tic-Tac-Toe.git
 cd tictactoe
 ```
 
