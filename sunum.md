@@ -1,3 +1,6 @@
+# Hamza_AL_SAKHEN    220206904
+# Selin_Agir         220206042
+
 # Tic Tac Toe LAN Oyunu Sunum Dosyası
 
 ## 1. Proje Özeti
